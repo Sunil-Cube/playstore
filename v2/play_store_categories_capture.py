@@ -52,11 +52,11 @@ def runIn():
 		store_categories_capture.get(capture_url)
 		time.sleep(7)
 
-		# try:
-		# 	store_categories_capture.find_element_by_xpath('//*[@class="see-more play-button small id-track-click apps id-responsive-see-more"]').click()
-		# 	time.sleep(10)
-		# except (ElementNotVisibleException, NoSuchElementException) as ex:
-		# 	print ex
+		try:
+			store_categories_capture.find_element_by_xpath('//*[@class="see-more play-button small id-track-click apps id-responsive-see-more"]').click()
+			time.sleep(10)
+		except (ElementNotVisibleException, NoSuchElementException) as ex:
+			print ex
 
 		page_source = lh.fromstring(store_categories_capture.page_source)
 		doc = page_source.xpath('//*[@class="id-card-list card-list two-cards"]/div/div/a')
