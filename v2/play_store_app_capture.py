@@ -3,6 +3,7 @@ import requests
 import lxml.html as lh
 import time
 import csv
+import re
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from pclasses.urls import *
@@ -51,15 +52,16 @@ app_name = doc.xpath('//*[@class="document-title"]/div/text()')
 downloads = doc.xpath('//*[@itemprop="numDownloads"]/text()')
 reviews_num = doc.xpath('//*[@class="reviews-num"]/text()')
 develper = doc.xpath('//*[@class="dev-link"]/@href')
+rating_value = doc.xpath('//*[@class="score"]/text()')
 email_address = []
 company_website_url = []
 if develper:
-    company_website_url = develper[0]
+    company_website_url = re.findall('=http://[a-zA-Z\.\-]+|=https://[a-zA-Z\.\-]+', develper[0])[0].split('=')[1]
     email_address = develper[1].split('mailto:')[1]
 
 csv_app_open = open('Output_playstoreapp.csv', 'ab')
 csv_app = csv.writer(csv_app_open, delimiter=',')
-csv_app.writerows([[app_cat_url,app_name[0],email_address,company_website_url,downloads[0],reviews_num[0]]])
+csv_app.writerows([[app_cat_url,app_name[0],email_address,company_website_url,downloads[0],reviews_num[0],rating_value[0]]])
 csv_app_open.close()
 
 app_capture.quit()

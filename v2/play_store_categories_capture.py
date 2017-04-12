@@ -35,10 +35,10 @@ def runIn():
 	store_categories_capture.maximize_window()
 
 	# go to URL
-	app_categories = ['Recruitment','']
+	app_categories = ['Airports','Recruitment']
 	csvopen = open('Output_playstoreapp.csv', 'ab')
 	csv_w = csv.writer(csvopen, delimiter=',')
-	csv_w.writerows([['Categories','App Name','Email Address','Company website URL','Installs','User evaluation']])
+	csv_w.writerows([['Categories','App Name','Email Address','Company website URL','Installs','User evaluation','App Rating']])
 	csvopen.close()
 
 	for app in app_categories:
