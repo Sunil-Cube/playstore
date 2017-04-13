@@ -27,7 +27,7 @@ def runIn():
 	]
 	
 	store_categories_capture = webdriver.PhantomJS(
-		executable_path='phantomjs',
+		executable_path="/usr/lib/node_modules/phantomjs/lib/phantom/bin/phantomjs",
 		desired_capabilities=dcap,
 		service_args=s_args
 	)
@@ -42,7 +42,7 @@ def runIn():
 	csvopen.close()
 
 	for app in app_categories:
-		capture_url = "https://play.google.com/store/search?q="+app
+		capture_url = "https://play.google.com/store/search?q="+app+"&c=apps"
 		print "Getting URL: %s" % capture_url
 		
 		r = requests.get(capture_url, verify=False, headers=HEADER)
@@ -52,11 +52,18 @@ def runIn():
 		store_categories_capture.get(capture_url)
 		time.sleep(7)
 
-		try:
-			store_categories_capture.find_element_by_xpath('//*[@class="see-more play-button small id-track-click apps id-responsive-see-more"]').click()
-			time.sleep(10)
-		except (ElementNotVisibleException, NoSuchElementException) as ex:
-			print ex
+		#Dynamic content loading.
+		scheight = .1
+		while scheight < 9.9:
+			s = "window.scrollTo(0, document.body.scrollHeight/%s);" % scheight
+			store_categories_capture.execute_script(s)
+			time.sleep(0.0)
+			scheight += .01
+
+		#Scroll down.
+		for i in range(3):
+			store_categories_capture.execute_script("window.scrollBy(0,10000)")
+			time.sleep(5)
 
 		page_source = lh.fromstring(store_categories_capture.page_source)
 		doc = page_source.xpath('//*[@class="id-card-list card-list two-cards"]/div/div/a')
@@ -64,7 +71,7 @@ def runIn():
 		job_urls = []
 		for i, elt in enumerate(doc):
 			if 'apps' in elt.attrib.get('href'):
-			    job_urls.append({app: "https://" + get_base_url(capture_url) + elt.attrib.get('href')})
+				job_urls.append({app: "https://" + get_base_url(capture_url) + elt.attrib.get('href')})
 
 		proc_count = multiprocessing.cpu_count()
 		if proc_count > 2:
@@ -79,14 +86,14 @@ def runIn():
 	
 	
 def process_urls(job_url):
-    for categories in job_url:
-        process_time = strftime("%Y-%m-%d %H:%M:%S")
-        print "%s\tCapturing Job Url: %s" % (process_time, job_url[categories])
-        cmd = '/home/sunils/playstore/v2/play_store_app_capture.py'
-        url = "%s" % job_url[categories]
-        cat= "%s" % categories
-        log = open('/home/sunils/playstore/v2/process_app_urls.txt', 'a')      
-        p = subprocess.Popen(['python', cmd, url, cat], stdout=log, stderr=log)
-        p.wait()
-        log.flush()
-        log.close()
+	for categories in job_url:
+		process_time = strftime("%Y-%m-%d %H:%M:%S")
+		print "%s\tCapturing Job Url: %s" % (process_time, job_url[categories])
+		cmd = '/home/sunils/playstore/v2/play_store_app_capture.py'
+		url = "%s" % job_url[categories]
+		cat= "%s" % categories
+		log = open('/home/sunils/playstore/v2/process_app_urls.txt', 'a')      
+		p = subprocess.Popen(['python', cmd, url, cat], stdout=log, stderr=log)
+		p.wait()
+		log.flush()
+		log.close()

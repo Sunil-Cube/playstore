@@ -22,17 +22,17 @@ dcap = dict(DesiredCapabilities.PHANTOMJS)
 dcap['phantomjs.page.settings.userAgent'] = (HEADER.get('User-Agent'))
 
 s_args = [
-    #'--proxy-type=http'
-    #'--proxy=104.196.243.100',
-    '--ignore-ssl-errors=true',
-    '--ssl-protocol=any',
-    '--web-security=false'
+	#'--proxy-type=http'
+	#'--proxy=104.196.243.100',
+	'--ignore-ssl-errors=true',
+	'--ssl-protocol=any',
+	'--web-security=false'
 ]
 
 app_capture = webdriver.PhantomJS(
-    executable_path='phantomjs',
-    desired_capabilities=dcap,
-    service_args=s_args
+	executable_path='phantomjs',
+	desired_capabilities=dcap,
+	service_args=s_args
 )
 app_capture.set_page_load_timeout(600)
 app_capture.maximize_window()
@@ -56,8 +56,8 @@ rating_value = doc.xpath('//*[@class="score"]/text()')
 email_address = []
 company_website_url = []
 if develper:
-    company_website_url = re.findall('=http://[a-zA-Z\.\-]+|=https://[a-zA-Z\.\-]+', develper[0])[0].split('=')[1]
-    email_address = develper[1].split('mailto:')[1]
+	company_website_url = re.findall('=http://[a-zA-Z\.\-]+|=https://[a-zA-Z\.\-]+', develper[0])[0].split('=')[1]
+	email_address = develper[1].split('mailto:')[1]
 
 csv_app_open = open('Output_playstoreapp.csv', 'ab')
 csv_app = csv.writer(csv_app_open, delimiter=',')
