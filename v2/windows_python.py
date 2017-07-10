@@ -1,3 +1,4 @@
+#Working on Windows os
 import play_store_categories_capture
 
 if __name__ == '__main__':    
